@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Skyflow demo for data privacy vaults"
+    />
+    <title>Skyflow Demo</title>
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main>
+      <h1>Skyflow Demo</h1>
+      <p>
+        Enter a fake credit card number for demo purposes.
+      </p>
+      <form id="creditCardNumberForm">
+        <label for="creditCard" class="sr-only">
+          Credit Card Number
+        </label>
+        <input
+          type="text"
+          name="creditCard"
+          id="creditCard"
+          placeholder="1234 5678 1234 5678"
+          autocomplete="off"
+        />
+        <button type="submit">Submit</button>
+      </form>
+      <div id="result" class="hidden"></div>
+    </main>
+    <script src="./script.js" type="text/javascript"></script>
+  </body>
+</html>

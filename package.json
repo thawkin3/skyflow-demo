@@ -1,0 +1,29 @@
+{
+  "name": "skyflow-demo",
+  "version": "1.0.0",
+  "description": "Skyflow demo for data privacy vaults",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --write .",
+    "format-watch": "onchange . -- prettier --write {{changed}}",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "data privacy",
+    "security",
+    "skyflow"
+  ],
+  "author": "Tyler Hawkins",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^13.0.1",
+    "express": "^4.17.2",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "onchange": "^7.1.0",
+    "prettier": "^2.4.1"
+  }
+}
