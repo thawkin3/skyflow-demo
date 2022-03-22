@@ -1,149 +1,154 @@
 (function () {
-  console.log('Skyflow demo script.js');
+  const initializeSkyflowClient = () => {
+    const getBearerToken = () => {
+      return new Promise((resolve, reject) => {
+        const Http = new XMLHttpRequest();
 
-  const getBearerToken = () => {
-    console.log('getBearerToken');
-    return new Promise((resolve, reject) => {
-      const Http = new XMLHttpRequest();
-
-      Http.onreadystatechange = () => {
-        if (Http.readyState == 4) {
-          if (Http.status == 200) {
-            const response = JSON.parse(Http.responseText);
-            console.log(response.data);
-            resolve(response.data);
-          } else {
-            console.log('error');
-            reject('Error occured');
+        Http.onreadystatechange = () => {
+          if (Http.readyState == 4) {
+            if (Http.status == 200) {
+              const response = JSON.parse(Http.responseText);
+              resolve(response.data);
+            } else {
+              reject('Error occured');
+            }
           }
-        }
-      };
+        };
 
-      Http.onerror = (error) => {
-        reject('Error occured');
-      };
+        Http.onerror = () => {
+          reject('Error occured');
+        };
 
-      const url = 'http://localhost:3000/api/bearerToken';
-      Http.open('GET', url);
-      Http.send();
+        const url = 'http://localhost:3000/api/bearerToken';
+        Http.open('GET', url);
+        Http.send();
+      });
+    };
+
+    const skyflowClient = Skyflow.init({
+      vaultID: 'cce8a3de0d2548fa9551f0f47f4c09b3',
+      vaultURL: 'https://ebfc9bee4242.vault.skyflowapis.com',
+      getBearerToken,
     });
+
+    return skyflowClient;
   };
 
-  const skyflowClient = Skyflow.init({
-    vaultID: 'cce8a3de0d2548fa9551f0f47f4c09b3', //Id of the vault that the client should connect to
-    vaultURL: 'https://ebfc9bee4242.vault.skyflowapis.com', //URL of the vault that the client should connect to
-    getBearerToken, //helper function that retrieves a Skyflow bearer token from your backend
-  });
+  const createCollectContainer = (skyflowClient) =>
+    skyflowClient.container(Skyflow.ContainerType.COLLECT);
 
-  console.log(skyflowClient);
-
-  // skyflowClient.insert({
-  //   records: [
-  //     {
-  //       table: 'credit_cards',
-  //       fields: {
-  //         card_number: '41111111111',
-  //         cardholder_name: 'John Doe',
-  //         expiry_date: '05/2025',
-  //       },
-  //     },
-  //   ],
-  // });
-
-  // create collect Container
-  const collectContainer = skyflowClient.container(
-    Skyflow.ContainerType.COLLECT
-  );
-
-  //custom styles for collect elements
   const collectStylesOptions = {
     inputStyles: {
       base: {
-        border: '1px solid #eae8ee',
-        padding: '10px 16px',
+        border: '1px solid #071a32',
         borderRadius: '4px',
-        color: '#1d1d1d',
+        color: '#071a32',
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        padding: '10px 16px',
         marginTop: '4px',
       },
-      complete: {
-        color: '#4caf50',
-      },
+      complete: {},
       empty: {},
-      focus: {},
-      invalid: {
-        color: '#f44336',
+      focus: {
+        outline: 'none',
+        border: [['1px 1px 4px 1px'], ['solid'], ['#071a32']],
+        padding: '10px 16px 7px 16px',
       },
+      invalid: {},
     },
     labelStyles: {
       base: {
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
         fontSize: '16px',
-        fontWeight: 'bold',
       },
     },
     errorTextStyles: {
       base: {
-        color: '#f44336',
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        fontSize: '16px',
       },
     },
   };
 
-  // create collect elements
-  const cardNumberElement = collectContainer.create({
-    table: 'credit_cards',
-    column: 'card_number',
-    ...collectStylesOptions,
-    placeholder: '1234 5678 9012 3456',
-    label: 'Card Number',
-    type: Skyflow.ElementType.CARD_NUMBER,
-  });
+  const createCollectElements = (collectContainer, collectStylesOptions) => {
+    const cardHolderNameElement = collectContainer.create({
+      table: 'credit_cards',
+      column: 'cardholder_name',
+      ...collectStylesOptions,
+      label: 'Card Holder Name',
+      placeholder: 'John Doe',
+      type: Skyflow.ElementType.CARDHOLDER_NAME,
+    });
 
-  // const cvvElement = collectContainer.create({
-  //   table: 'credit_cards',
-  //   column: 'cvv',
-  //   ...collectStylesOptions,
-  //   label: 'CVV',
-  //   placeholder: '123',
-  //   type: Skyflow.ElementType.CVV,
-  // });
+    const cardNumberElement = collectContainer.create({
+      table: 'credit_cards',
+      column: 'card_number',
+      ...collectStylesOptions,
+      placeholder: '4111 1111 1111 1111',
+      label: 'Card Number',
+      type: Skyflow.ElementType.CARD_NUMBER,
+    });
 
-  const expiryDateElement = collectContainer.create({
-    table: 'credit_cards',
-    column: 'expiry_date',
-    ...collectStylesOptions,
-    label: 'Expiry Date (MM/YYYY)',
-    placeholder: '01/2025',
-    type: Skyflow.ElementType.EXPIRATION_DATE,
-  });
+    const expiryDateElement = collectContainer.create({
+      table: 'credit_cards',
+      column: 'expiry_date',
+      ...collectStylesOptions,
+      label: 'Expiry Date (MM/YY)',
+      placeholder: '01/24',
+      type: Skyflow.ElementType.EXPIRATION_DATE,
+    });
 
-  const cardHolderNameElement = collectContainer.create({
-    table: 'credit_cards',
-    column: 'cardholder_name',
-    ...collectStylesOptions,
-    label: 'Card Holder Name',
-    placeholder: 'John Doe',
-    type: Skyflow.ElementType.CARDHOLDER_NAME,
-  });
-
-  // mount the elements
-  cardNumberElement.mount('#collectCardNumber');
-  // cvvElement.mount('#collectCvv');
-  expiryDateElement.mount('#collectExpiryDate');
-  cardHolderNameElement.mount('#collectCardholderName');
-
-  // handle form submission
-  const submitCreditCardForm = (e) => {
-    e.preventDefault();
-
-    const collectResponse = collectContainer.collect();
-    collectResponse
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    return [cardHolderNameElement, cardNumberElement, expiryDateElement];
   };
 
-  const creditCardForm = document.querySelector('#creditCardForm');
-  creditCardForm.addEventListener('submit', submitCreditCardForm);
+  const mountCollectElements = (
+    cardHolderNameElement,
+    cardNumberElement,
+    expiryDateElement
+  ) => {
+    cardHolderNameElement.mount('#collectCardholderName');
+    cardNumberElement.mount('#collectCardNumber');
+    expiryDateElement.mount('#collectExpiryDate');
+  };
+
+  const addFormSubmissionEventListener = (collectContainer) => {
+    const submitCreditCardForm = (e) => {
+      e.preventDefault();
+      const resultContainer = document.querySelector('#result');
+
+      const collectResponse = collectContainer.collect();
+      collectResponse
+        .then((data) => {
+          resultContainer.textContent = `Success! Stored tokenized data with ID: ${data.records[0].fields.skyflow_id}`;
+          resultContainer.classList.remove('hidden');
+        })
+        .catch(() => {
+          resultContainer.textContent =
+            'Error. Unable to store credit card info.';
+          resultContainer.classList.remove('hidden');
+        });
+    };
+
+    const creditCardForm = document.querySelector('#creditCardForm');
+    creditCardForm.addEventListener('submit', submitCreditCardForm);
+  };
+
+  const init = () => {
+    const skyflowClient = initializeSkyflowClient();
+
+    const collectContainer = createCollectContainer(skyflowClient);
+
+    const [cardHolderNameElement, cardNumberElement, expiryDateElement] =
+      createCollectElements(collectContainer, collectStylesOptions);
+
+    mountCollectElements(
+      cardHolderNameElement,
+      cardNumberElement,
+      expiryDateElement
+    );
+
+    addFormSubmissionEventListener(collectContainer);
+  };
+
+  init();
 })();
