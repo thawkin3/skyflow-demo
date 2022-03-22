@@ -11,8 +11,16 @@
     <main>
       <h1>Skyflow Demo</h1>
       <p>Enter a fake credit card number for demo purposes.</p>
-      <form id="creditCardNumberForm">
-        <label for="creditCard" class="sr-only"> Credit Card Number </label>
+      <form id="creditCardForm">
+        <div id="collectCardNumber" class="skyflow-field-container"></div>
+        <!-- <div id="collectCvv" class="skyflow-field-container"></div> -->
+        <div id="collectExpiryDate" class="skyflow-field-container"></div>
+        <div id="collectCardholderName" class="skyflow-field-container"></div>
+        <div>
+          <button type="submit" id="submit">Submit Credit Card Info</button>
+        </div>
+
+        <!-- <label for="creditCard" class="sr-only"> Credit Card Number </label>
         <input
           type="text"
           name="creditCard"
@@ -20,7 +28,7 @@
           placeholder="1234 5678 1234 5678"
           autocomplete="off"
         />
-        <button type="submit">Submit</button>
+        <button type="submit">Submit</button> -->
       </form>
       <div id="result" class="hidden"></div>
     </main>
